@@ -16,6 +16,10 @@ public class LocalGitExecutor {
 
     // git merge-base <branchB> origin/<branchA>
     public String getMergeBase(String branchA, String branchB) throws GitOperationException, IOException, InterruptedException {
+        if (branchA == null || branchA.isEmpty() || branchB == null || branchB.isEmpty()) {
+            throw new IllegalArgumentException("Branch names must not be null or empty");
+        }
+
         ProcessBuilder processBuilder = new ProcessBuilder("git", "merge-base", branchB, "origin/" + branchA);
         processBuilder.directory(new File(repoPath));
         Process process = processBuilder.start();
@@ -34,6 +38,10 @@ public class LocalGitExecutor {
 
     // git diff --name-only <merge-base> <branchB>
     public List<String> getChangedFilesSinceMergeBase(String mergeBase, String branchB) throws GitOperationException, IOException, InterruptedException {
+        if (mergeBase == null || mergeBase.isEmpty() || branchB == null || branchB.isEmpty()) {
+            throw new IllegalArgumentException("Merge base and branch names must not be null or empty");
+        }
+
         ProcessBuilder processBuilder = new ProcessBuilder("git", "diff", "--name-only", mergeBase, branchB);
         processBuilder.directory(new File(repoPath));
         Process process = processBuilder.start();
