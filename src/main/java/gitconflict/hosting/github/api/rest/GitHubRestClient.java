@@ -13,11 +13,11 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GithubRestClient implements GithubApiClient {
+public class GitHubRestClient implements GithubApiClient {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    public GithubRestClient() {
+    public GitHubRestClient() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
     }

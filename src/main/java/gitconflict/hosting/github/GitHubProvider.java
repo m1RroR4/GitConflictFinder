@@ -2,7 +2,7 @@ package gitconflict.hosting.github;
 
 import gitconflict.hosting.VCSHostingProvider;
 import gitconflict.hosting.github.api.GithubApiClient;
-import gitconflict.hosting.github.api.rest.GithubRestClient;
+import gitconflict.hosting.github.api.rest.GitHubRestClient;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -13,7 +13,7 @@ public class GitHubProvider implements VCSHostingProvider {
         if (owner == null || owner.isEmpty() || repo == null || repo.isEmpty() || accessToken == null || accessToken.isEmpty() || mergeBase == null || mergeBase.isEmpty() || branch == null || branch.isEmpty()) {
             throw new IllegalArgumentException("Invalid input parameters");
         }
-        GithubApiClient githubApiClient = new GithubRestClient();
+        GithubApiClient githubApiClient = new GitHubRestClient();
         return githubApiClient.fetchChangedFiles(owner, repo, accessToken, mergeBase, branch);
     }
 }
