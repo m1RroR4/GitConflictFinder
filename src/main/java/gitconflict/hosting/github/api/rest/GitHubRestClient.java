@@ -18,8 +18,12 @@ public class GitHubRestClient implements GithubApiClient {
     private final ObjectMapper objectMapper;
 
     public GitHubRestClient() {
-        this.httpClient = HttpClient.newHttpClient();
+        this.httpClient = createHttpClient();
         this.objectMapper = new ObjectMapper();
+    }
+
+    HttpClient createHttpClient() {
+        return HttpClient.newHttpClient();
     }
 
     @Override
