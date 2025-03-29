@@ -8,6 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Implementation of the GitConflictFinder interface.
+ * Provides methods to find conflicting files in a Git repository.
+ */
 public class GitConflictFinderImpl implements GitConflictFinder {
     private final String owner;
     private final String repo;
@@ -16,6 +20,16 @@ public class GitConflictFinderImpl implements GitConflictFinder {
     private final String branchA;
     private final String branchB;
 
+    /**
+     * Constructs a new GitConflictFinderImpl with the specified parameters.
+     *
+     * @param owner the owner of the repository
+     * @param repo the name of the repository
+     * @param accessToken the access token for authentication
+     * @param localRepoPath the local path to the repository
+     * @param branchA the name of the first branch to compare
+     * @param branchB the name of the second branch to compare
+     */
     public GitConflictFinderImpl(String owner, String repo, String accessToken,
                                  String localRepoPath, String branchA, String branchB) {
         this.owner = owner;
@@ -26,7 +40,12 @@ public class GitConflictFinderImpl implements GitConflictFinder {
         this.branchB = branchB;
     }
 
-
+    /**
+     * Finds the list of files that have conflicts between two branches.
+     *
+     * @return a list of filenames of the conflicting files
+     * @throws Exception if an error occurs while finding conflicting files
+     */
     @Override
     public List<String> findConflictingFiles() throws Exception {
         LocalGitExecutor localGitExecutor = new LocalGitExecutor(localRepoPath);
