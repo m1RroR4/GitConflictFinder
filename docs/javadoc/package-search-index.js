@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"gitconflict"},{"l":"gitconflict.git"},{"l":"gitconflict.hosting"},{"l":"gitconflict.hosting.github"},{"l":"gitconflict.hosting.github.api"},{"l":"gitconflict.hosting.github.api.rest"}];updateSearchResults();
