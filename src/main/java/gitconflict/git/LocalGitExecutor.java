@@ -7,14 +7,31 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Executes local Git commands in a specified repository.
+ */
 public class LocalGitExecutor {
     private final String repoPath;
 
+    /**
+     * Constructs a new LocalGitExecutor for the specified repository path.
+     *
+     * @param repoPath the path to the local Git repository
+     */
     public LocalGitExecutor(String repoPath) {
         this.repoPath = repoPath;
     }
 
-    // git merge-base <branchB> origin/<branchA>
+    /**
+     * Finds the merge base between two branches.
+     *
+     * @param branchA the name of the first branch
+     * @param branchB the name of the second branch
+     * @return the merge base commit hash
+     * @throws GitOperationException if the Git operation fails
+     * @throws IOException if an I/O error occurs
+     * @throws InterruptedException if the process is interrupted
+     */
     public String getMergeBase(String branchA, String branchB) throws GitOperationException, IOException, InterruptedException {
         if (branchA == null || branchA.isEmpty() || branchB == null || branchB.isEmpty()) {
             throw new IllegalArgumentException("Branch names must not be null or empty");
@@ -36,7 +53,16 @@ public class LocalGitExecutor {
         }
     }
 
-    // git diff --name-only <merge-base> <branchB>
+    /**
+     * Gets the list of files changed since the specified merge base.
+     *
+     * @param mergeBase the merge base commit hash
+     * @param branchB the name of the branch to compare
+     * @return a list of changed files
+     * @throws GitOperationException if the Git operation fails
+     * @throws IOException if an I/O error occurs
+     * @throws InterruptedException if the process is interrupted
+     */
     public List<String> getChangedFilesSinceMergeBase(String mergeBase, String branchB) throws GitOperationException, IOException, InterruptedException {
         if (mergeBase == null || mergeBase.isEmpty() || branchB == null || branchB.isEmpty()) {
             throw new IllegalArgumentException("Merge base and branch names must not be null or empty");
