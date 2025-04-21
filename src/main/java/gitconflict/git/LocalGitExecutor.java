@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Executes local Git commands in a specified repository.
@@ -29,8 +30,8 @@ public class LocalGitExecutor {
      * @param branchB the name of the second branch
      * @return the merge base commit hash
      * @throws GitOperationException if the Git operation fails
-     * @throws IOException if an I/O error occurs
-     * @throws InterruptedException if the process is interrupted
+     * @throws IOException           if an I/O error occurs
+     * @throws InterruptedException  if the process is interrupted
      */
     public String getMergeBase(String branchA, String branchB) throws GitOperationException, IOException, InterruptedException {
         if (branchA == null || branchA.isEmpty() || branchB == null || branchB.isEmpty()) {
@@ -57,26 +58,43 @@ public class LocalGitExecutor {
      * Gets the list of files changed since the specified merge base.
      *
      * @param mergeBase the merge base commit hash
-     * @param branchB the name of the branch to compare
+     * @param branchB   the name of the branch to compare
      * @return a list of changed files
      * @throws GitOperationException if the Git operation fails
-     * @throws IOException if an I/O error occurs
-     * @throws InterruptedException if the process is interrupted
+     * @throws IOException           if an I/O error occurs
+     * @throws InterruptedException  if the process is interrupted
      */
-    public List<String> getChangedFilesSinceMergeBase(String mergeBase, String branchB) throws GitOperationException, IOException, InterruptedException {
+    public List<String> getChangedFilesSinceMergeBase(String mergeBase, String branchB)
+            throws GitOperationException, IOException, InterruptedException {
+
         if (mergeBase == null || mergeBase.isEmpty() || branchB == null || branchB.isEmpty()) {
             throw new IllegalArgumentException("Merge base and branch names must not be null or empty");
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder("git", "diff", "--name-only", mergeBase, branchB);
+        ProcessBuilder processBuilder = new ProcessBuilder("git", "diff", "--name-status", mergeBase, branchB);
         processBuilder.directory(new File(repoPath));
         Process process = processBuilder.start();
         int exitCode = process.waitFor();
         if (exitCode != 0) {
             throw new GitOperationException("Failed to get changed files from " + mergeBase + " to " + branchB + " with exit code " + exitCode);
         }
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            return reader.lines().collect(Collectors.toList());
+            return reader.lines()
+                    .flatMap(line -> {
+                        String[] parts = line.split("\t");
+                        if (parts.length == 2) {
+                            // A, D, M cases
+                            return Stream.of(parts[1]);
+                        } else if (parts.length == 3 && parts[0].startsWith("R")) {
+                            // Rename case, return both old and new paths
+                            return Stream.of(parts[1], parts[2]);
+                        } else {
+                            return Stream.empty();
+                        }
+                    })
+                    .distinct()
+                    .collect(Collectors.toList());
         }
     }
 }
